@@ -1,0 +1,50 @@
+<MainScreen>
+    GridLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+        rows: 6
+        cols: 1
+        canvas.before:
+            Color:
+                rgba: 13,13,13,.1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            orientation: "horizontal"
+            Label:
+                text: "Title of the song"
+
+
+        BoxLayout:
+            orientation: "horizontal"
+            center_x: self.parent.center_x
+            center_y: self.parent.center_y
+
+            ImageButton:
+                on_press: print('previous song')
+                source: 'icon/back.png'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                size: 50, 50
+                size_hint: None, None
+                allow_stretch: True
+
+            ImageButton:
+                on_press: print('play song')
+                source: 'icon/play.png'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                size: 50,50
+                size_hint: None, None
+                allow_stretch: True
+
+            ImageButton:
+                on_press: print('next song')
+                source: 'icon/next.png'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                size: 50, 50
+                size_hint: None, None
+                allow_stretch: True
