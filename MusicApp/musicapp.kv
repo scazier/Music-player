@@ -1,35 +1,67 @@
 <MainScreen>
-
-    GridLayout:
+    BoxLayout:
         orientation: "vertical"
-        rows: 6
-        cols: 1
+        spacing: 4
         size: root.width, root.height
         canvas.before:
             Color:
-                rgba: 13,13,13,.1
+                rgba: .12,.12,.12,1
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         BoxLayout:
             orientation: "horizontal"
+            size_hint_y: None
+            height: 15
+
             Label:
                 id: song
                 text: "Title of the song"
 
+        BoxLayout
+            orientation: "horizontal"
+            padding: 1,1,1,1
+            size_hint_y: None
+            height: 15
+
+            AnchorLayout:
+                anchor_x: 'left'
+                size_hint_x: 8
+
+                Slider:
+                    id: progress
+                    max: 1000
+                    value: 0
+                    width: 310
+                    pos: (0 , 200)
+                    value_track: True
+                    value_track_color: .2, .6, 1, 1
+                    cursor_size: 12, 30
+                    size_hint: None, None
+
+            AnchorLayout:
+                anchor_x: 'right'
+                Label:
+                    id: duration
+                    text: ""
+                    pos_hint: {'x': .1}
+                    size_hint_x: 2
 
         BoxLayout:
-            orientation: "horizontal"
-            center_x: self.parent.center_x
-            center_y: self.parent.center_y
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 32
+            spacing: 30
+            padding: self.parent.width/2 - (3*self.height + 60)/2, 0, 0, 0
+
 
             ImageButton:
                 on_release: root.previous_song()
                 source: 'icon/back.png'
-                center_x: self.parent.center_x
-                center_y: self.parent.center_y
-                size: 50, 50
+                #center_x: self.parent.center_x
+                #center_y: self.parent.center_y
+                size: self.parent.height, self.parent.height
                 size_hint: None, None
                 allow_stretch: True
 
@@ -40,17 +72,23 @@
                 started: 0
                 # started is a value to know if the song is already started to
                 # unpause it or play it from the beginning
-                center_x: self.parent.center_x
-                center_y: self.parent.center_y
-                size: 50,50
+                size: self.parent.height, self.parent.height
                 size_hint: None, None
                 allow_stretch: True
 
             ImageButton:
                 on_press: root.next_song()
                 source: 'icon/next.png'
-                center_x: self.parent.center_x
-                center_y: self.parent.center_y
-                size: 50, 50
+                #center_x: self.parent.center_x
+                #center_y: self.parent.center_y
+                size: self.parent.height, self.parent.height
                 size_hint: None, None
                 allow_stretch: True
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint_y: None
+            height: 15
+
+            Label:
+                text: "Volume/Shuffle musics part"
