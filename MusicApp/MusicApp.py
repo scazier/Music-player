@@ -33,9 +33,15 @@ class Song:
 	def time(self, time):
 		res = ""
 		if time < 3600:
-			res = str(time // 60)+'.'+str(time % 60)
+			res = str(time // 60)+'.'+self.format_seconds(str(time % 60))
 		else:
-			res = str(time // 3600)+'.'+str((time % 3600) // 60)+'.'+str((time % 3600) % 60)
+			res = str(time // 3600)+'.'+self.format_seconds(str(time % 3600)) // 60+'.'+self.format_seconds(str(time % 3600)) % 60
+		return res
+
+	def format_seconds(self, sec):
+		res = sec
+		if int(sec) < 10:
+				res = '0'+sec
 		return res
 
 	def length(self, src):
@@ -64,13 +70,13 @@ class MainScreen(GridLayout):
 
 		dur = Song().length(music_path+'/'+self.song.text)
 		self.ids.duration.text = "0.00/"+dur
-		self.ids.progress.max = 60*dur.split('.')[0] + dur.split('.')[1]
+		self.ids.progress.max = 60*int(dur.split('.')[0]) + int(dur.split('.')[1])
 
 
 	def update(self, dt):
 		current_time = Song().time(int(pygame.mixer.music.get_pos()/1000))
 		self.ids.duration.text = current_time+'/'+self.ids.duration.text.split('/')[1]
-		self.ids.progress.value = current_time
+		self.ids.progress.value = 60*int(current_time.split('.')[0]) + int(current_time.split('.')[1])
 
 	def next_song(self):
 		self.song.text = "Next song"
