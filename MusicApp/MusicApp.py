@@ -53,10 +53,20 @@ class Song:
 class MainScreen(GridLayout):
 
 	def __init__(self,**kwargs):
+
 		super(GridLayout, self).__init__(**kwargs)
+
 		pygame.init()
 		pygame.mixer.init()
+
 		self.first_song = True
+		self.randomSongs = True
+
+		self.pressed_back = 0
+		# This variable stands
+		self.last_songs = []
+		# This will store the last 20 songs listened
+
 		if os.path.exists(music_path):
 			self.all_songs = os.listdir(music_path)
 		else:
@@ -64,14 +74,16 @@ class MainScreen(GridLayout):
 		self.song = self.ids.song
 		self.play = self.ids.play
 
-		if self.first_song:
+		if self.last_songs == []:
 			current_song = random.choice(self.all_songs)
 			self.song.text = current_song
 
-		dur = Song().length(music_path+'/'+self.song.text)
+		self.initSong(self.song.text)
+
+	def initSong(self,name):
+		dur = Song().length(music_path+'/'+name)
 		self.ids.duration.text = "0.00/"+dur
 		self.ids.progress.max = 60*int(dur.split('.')[0]) + int(dur.split('.')[1])
-
 
 	def update(self, dt):
 		current_time = Song().time(int(pygame.mixer.music.get_pos()/1000))
@@ -79,14 +91,47 @@ class MainScreen(GridLayout):
 		self.ids.progress.value = 60*int(current_time.split('.')[0]) + int(current_time.split('.')[1])
 
 	def next_song(self):
-		self.song.text = "Next song"
+		print(self.last_songs)
+		self.play.started = 0
+		if self.pressed_back != 0:
+			self.pressed_back -= 1
+			self.song.text = self.last_songs[-self.pressed_back]
+		else:
+			if self.randomSongs:
+				differentSong = False
+				while not differentSong:
+					nextSong = random.choice(self.all_songs)
+					if self.song.text is not nextSong:
+						differentSong = True
+						self.last_songs.append(self.song.text)
+						self.song.text = nextSong
+			else:
+				self.last_songs.append(self.song.text)
+				if self.song.text == self.all_songs[-1]:
+					self.song.text = self.all_songs[0]
+				else:
+					self.song.text = self.all_songs[self.all_songs.index(self.song.text)+1]
+
+		self.initSong(self.song.text)
+		if self.play.source.split('/')[1] != "play.png":
+			self.play.source = self.play.source.split('/')[0]+"/play.png"
+			self.on_play()
 
 	def previous_song(self):
-		self.song.text = "Previous song"
+		self.play.started = 0
+		if (self.pressed_back):
+			self.pressed_back += 1
+			self.song.text = self.last_songs[-self.pressed_back]
+		else:
+			self.song.text = random.choice(self.all_songs)
+
+		self.initSong(self.song.text)
+		if self.play.source.split('/')[1] != "play.png":
+			self.play.source = self.play.source.split('/')[0]+"/play.png"
+			self.on_play()
 
 	def on_play(self):
 		if self.play.source.split('/')[1] == "play.png":
-
 			if self.play.started:
 				pygame.mixer.music.unpause()
 			else:
