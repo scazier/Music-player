@@ -119,11 +119,14 @@ class MainScreen(GridLayout):
 
 	def previous_song(self):
 		self.play.started = 0
-		if (self.pressed_back):
-			self.pressed_back += 1
-			self.song.text = self.last_songs[-self.pressed_back]
-		else:
-			self.song.text = random.choice(self.all_songs)
+		if int(self.ids.duration.text.split('/')[0].split('.')[-1]) < 5:
+			# If the song started more than 5 seconds ago it restart the song
+			# from the beginning when the previous song button is pressed
+			if (self.pressed_back):
+				self.pressed_back += 1
+				self.song.text = self.last_songs[-self.pressed_back]
+			else:
+				self.song.text = random.choice(self.all_songs)
 
 		self.initSong(self.song.text)
 		if self.play.source.split('/')[1] != "play.png":
