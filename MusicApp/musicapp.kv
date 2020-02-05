@@ -19,7 +19,7 @@
                 id: song
                 text: "Title of the song"
 
-        BoxLayout
+        BoxLayout:
             orientation: "horizontal"
             padding: 80, 0, 0, 0
             size_hint: None, None
@@ -27,14 +27,11 @@
             width: root.width
 
             AnchorLayout:
-                #anchor_x: 'right'
                 ProgressBar:
                     anchor_x: 'right'
                     id: progress
-                    max: 1000
+                    max: 100
                     value: 0
-                    value_track: True
-                    value_track_color: .2, .6, 1, 1
                     cursor_size: 0, 0
                     size_hint_x: None
                     pos_hint_x: None
@@ -59,8 +56,6 @@
             ImageButton:
                 on_release: root.previous_song()
                 source: 'icon/back.png'
-                #center_x: self.parent.center_x
-                #center_y: self.parent.center_y
                 size: self.parent.height, self.parent.height
                 size_hint: None, None
                 allow_stretch: True
@@ -79,16 +74,53 @@
             ImageButton:
                 on_press: root.next_song()
                 source: 'icon/next.png'
-                #center_x: self.parent.center_x
-                #center_y: self.parent.center_y
                 size: self.parent.height, self.parent.height
                 size_hint: None, None
                 allow_stretch: True
 
         BoxLayout:
             orientation: "horizontal"
-            size_hint_y: None
-            height: 15
+            size_hint: None, None
+            height: 24
+            width: root.width
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 0,0,1,1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
-            Label:
-                text: "Volume/Shuffle musics part"
+            ImageButton:
+                id: shuffle
+                on_release: root.on_shuffle()
+                source: 'icon/shuffle.png'
+                size: self.parent.height, self.parent.height
+                size_hint: None, None
+                allow_stretch: True
+
+            Image:
+                id: volumeImage
+                source: 'icon/volume.png'
+                size: self.parent.height, self.parent.height
+                size_hint: None, None
+                allow_stretch: True
+
+            Slider:
+                id: volume
+                orientation: 'horizontal'
+                size_hint_x: None
+                width: .5*root.width
+                min: 0
+                max: 100
+                step: .05
+                value: 50
+                value_track: True
+                value_track_color: .2, .6, 1, 1
+                cursor_size: 0,0
+                canvas.before:
+                    Color:
+                        rgba: 0,1,0,.5
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
