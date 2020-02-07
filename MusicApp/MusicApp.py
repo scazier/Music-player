@@ -2,7 +2,8 @@ import os
 import sys
 import wave
 import random
-import pygame
+from pygame.mixer import init
+from pygame.mixer import music
 from mutagen.mp3 import MP3
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -57,9 +58,7 @@ class MainScreen(GridLayout):
 	def __init__(self,**kwargs):
 
 		super(GridLayout, self).__init__(**kwargs)
-
-		#pygame.init()
-		pygame.mixer.init()
+		init()
 
 		self.first_song = True
 		self.randomSongs = True
@@ -83,7 +82,7 @@ class MainScreen(GridLayout):
 		self.initSong(self.song.text)
 
 		# It will used to control the volume and all the icon related to it
-		Clock.schedule_interval(self.check_volume, 0.1)
+		#Clock.schedule_interval(self.check_volume, 0.1)
 
 
 	def initSong(self,name):
@@ -93,9 +92,17 @@ class MainScreen(GridLayout):
 
 
 	def update(self, dt):
-		current_time = Song().time(int(pygame.mixer.music.get_pos()/1000))
+		pos = music.get_pos() / 1000
+		"""
+		if int(pos) != self.ids.progress.value and int(10*round((music.get_pos()/1000)%1,2)) >= 1:
+			music.rewind()
+			music.set_pos(self.ids.progress.value)
+			print("Hello: "+str(self.ids.progress.value)+' - '+str(music.get_pos()))
+		"""
+		current_time = Song().time(int(pos))
 		self.ids.duration.text = current_time+'/'+self.ids.duration.text.split('/')[1]
 		self.ids.progress.value = 60*int(current_time.split('.')[0]) + int(current_time.split('.')[1])
+
 
 
 	def next_song(self):
@@ -146,15 +153,15 @@ class MainScreen(GridLayout):
 	def on_play(self):
 		if self.play.source.split('/')[1] == "play.png":
 			if self.play.started:
-				pygame.mixer.music.unpause()
+				music.unpause()
 			else:
-				pygame.mixer.music.load(music_path+self.song.text)
-				pygame.mixer.music.play()
+				music.load(music_path+self.song.text)
+				music.play()
 				self.play.started = 1
 			self.play.source = self.play.source.split('/')[0]+"/stop.png"
-			Clock.schedule_interval(self.update, 0.5)
+			Clock.schedule_interval(self.update, 0.1)
 		else:
-			pygame.mixer.music.pause()
+			music.pause()
 			self.play.source = self.play.source.split('/')[0]+"/play.png"
 			Clock.unschedule(self.update)
 
@@ -167,14 +174,9 @@ class MainScreen(GridLayout):
 			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle.png'
 			self.randomSongs = False
 
+	def check_volume(self, *args):
+		music.set_volume(args[1])
 
-	def check_volume(self, dt):
-		if pygame.mixer.music.get_volume() != self.ids.volume.value/100:
-			pygame.mixer.music.set_volume(self.ids.volume.value/100)
-
-		self.check_mute()
-
-	def check_mute(self):
 		if self.ids.volumeImage.source.split('/')[1] == 'volume.png':
 			if not self.ids.volume.value:
 				self.ids.volumeImage.source = self.ids.volumeImage.source.split('/')[0]+'/mute.png'
@@ -186,7 +188,7 @@ class MusicApp(App):
 
 	def build(self):
 		Window.size = (400, 100)
-		self.title = "Music Player"
+		Window.title = "Music Player"
 		return MainScreen()
 
 
