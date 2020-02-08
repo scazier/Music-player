@@ -20,11 +20,13 @@ from kivy.properties import ObjectProperty
 from kivy.uix.slider import Slider
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.animation import Animation
 
 
 Config.set('graphics','resizable', False)
 
 music_path = "./musics/"
+(WIDTH, HEIGHT) = (400, 100)
 
 class ImageButton(ButtonBehavior, Image):
 	pass
@@ -53,11 +55,11 @@ class Song:
 		return self.time(duration)
 
 
-class MainScreen(GridLayout):
+class MainScreen(BoxLayout):
 
 	def __init__(self,**kwargs):
 
-		super(GridLayout, self).__init__(**kwargs)
+		super(BoxLayout, self).__init__(**kwargs)
 		init()
 
 		self.first_song = True
@@ -81,8 +83,6 @@ class MainScreen(GridLayout):
 
 		self.initSong(self.song.text)
 
-		# It will used to control the volume and all the icon related to it
-		#Clock.schedule_interval(self.check_volume, 0.1)
 
 
 	def initSong(self,name):
@@ -168,7 +168,7 @@ class MainScreen(GridLayout):
 
 	def on_shuffle(self):
 		if self.ids.shuffle.source.split('/')[1] == "shuffle.png":
-			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle_pressed.png'
+			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle_pressedTER.png'
 			self.randomSongs = True
 		else:
 			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle.png'
@@ -184,10 +184,23 @@ class MainScreen(GridLayout):
 			if self.ids.volume.value:
 				self.ids.volumeImage.source = self.ids.volumeImage.source.split('/')[0]+'/volume.png'
 
+	def openSearch(self):
+		if Window.size[1] == HEIGHT:
+			Window.size = (WIDTH, HEIGHT+30)
+			print('hey!')
+		else:
+			Window.size = (WIDTH, HEIGHT)
+			print('see you')
+
+	def search(self, text):
+		print(text)
+
+
+
 class MusicApp(App):
 
 	def build(self):
-		Window.size = (400, 100)
+		Window.size = (WIDTH, HEIGHT)
 		Window.title = "Music Player"
 		return MainScreen()
 

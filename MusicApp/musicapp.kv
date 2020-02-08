@@ -11,6 +11,22 @@
                 size: self.size
 
         BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: None
+            height: 30
+
+
+            TextInput:
+                id: query
+                hint_text: 'search'
+                text: ''
+                multiline: False
+                on_text_validate: root.search(query.text)
+                #on_text: function will run the function at each caracters entered
+                #background_color = .12,.12,.12,1
+                #foreground_color = 1,1,1,1
+                # upgrade kivy to 1.2 at least
+        BoxLayout:
             orientation: "horizontal"
             size_hint_y: None
             height: 15
@@ -93,12 +109,20 @@
             height: 24
             width: root.width
             spacing: 10
-            canvas.before:
-                Color:
-                    rgba: 0,0,1,1
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+            #canvas.before:
+            #    Color:
+            #        rgba: 0,0,1,1
+            #    Rectangle:
+            #        pos: self.pos
+            #        size: self.size
+
+
+            ImageButton:
+                source: 'icon/search.png'
+                size_hint: None,None
+                size: self.parent.height, self.parent.height
+                allow_stretch: True
+                on_release: root.openSearch()
 
             ImageButton:
                 id: shuffle
