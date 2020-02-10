@@ -21,15 +21,18 @@ from kivy.uix.slider import Slider
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.uix.textinput import TextInput
 
-
-Config.set('graphics','resizable', False)
+Config.set('graphics','borderless',1)
+Config.set('graphics','resizable', 0)
 
 music_path = "./musics/"
 (WIDTH, HEIGHT) = (400, 100)
+SEARCHBAR_HEIGHT = 30
 
 class ImageButton(ButtonBehavior, Image):
 	pass
+
 
 class Song:
 
@@ -168,15 +171,16 @@ class MainScreen(BoxLayout):
 
 	def on_shuffle(self):
 		if self.ids.shuffle.source.split('/')[1] == "shuffle.png":
-			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle_pressedTER.png'
+			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle_pressed.png'
 			self.randomSongs = True
 		else:
 			self.ids.shuffle.source = self.ids.shuffle.source.split('/')[0] + '/shuffle.png'
 			self.randomSongs = False
 
+
 	def check_volume(self, *args):
 		music.set_volume(args[1])
-
+		print(self.ids.volume.cursor_size)
 		if self.ids.volumeImage.source.split('/')[1] == 'volume.png':
 			if not self.ids.volume.value:
 				self.ids.volumeImage.source = self.ids.volumeImage.source.split('/')[0]+'/mute.png'
@@ -184,13 +188,15 @@ class MainScreen(BoxLayout):
 			if self.ids.volume.value:
 				self.ids.volumeImage.source = self.ids.volumeImage.source.split('/')[0]+'/volume.png'
 
+
 	def openSearch(self):
+		print(Window.size[1])
 		if Window.size[1] == HEIGHT:
-			Window.size = (WIDTH, HEIGHT+30)
-			print('hey!')
+			Window.size = (WIDTH, HEIGHT+SEARCHBAR_HEIGHT)
+			self.ids.query.height = SEARCHBAR_HEIGHT
 		else:
+			self.ids.query.height = 0
 			Window.size = (WIDTH, HEIGHT)
-			print('see you')
 
 	def search(self, text):
 		print(text)
@@ -200,6 +206,7 @@ class MainScreen(BoxLayout):
 class MusicApp(App):
 
 	def build(self):
+		#Window.borderless = True
 		Window.size = (WIDTH, HEIGHT)
 		Window.title = "Music Player"
 		return MainScreen()

@@ -11,22 +11,6 @@
                 size: self.size
 
         BoxLayout:
-            orientation: 'horizontal'
-            size_hint_y: None
-            height: 30
-
-
-            TextInput:
-                id: query
-                hint_text: 'search'
-                text: ''
-                multiline: False
-                on_text_validate: root.search(query.text)
-                #on_text: function will run the function at each caracters entered
-                #background_color = .12,.12,.12,1
-                #foreground_color = 1,1,1,1
-                # upgrade kivy to 1.2 at least
-        BoxLayout:
             orientation: "horizontal"
             size_hint_y: None
             height: 15
@@ -143,14 +127,14 @@
                 id: volume
                 orientation: 'horizontal'
                 size_hint_x: None
-                width: .3*root.width
+                width: .7*root.width
                 min: 0
                 max: 1
                 step: .05
                 value: .5
+                cursor_size: (0,0)
                 value_track: True
                 value_track_color: .2, .6, 1, 1
-                cursor_size: 0,0
                 on_value: root.check_volume(*args)
                 canvas.before:
                     Color:
@@ -158,3 +142,18 @@
                     Rectangle:
                         pos: self.pos
                         size: self.size
+
+        TextInput:
+            id: query
+            hint_text: 'search'
+            text: ''
+            multiline: False
+            on_text_validate: root.search(query.text)
+            cursor_blink: True
+            focus: True
+            size_hint_y: None
+            height: 0
+            #on_text: function will run the function at each caracters entered
+            background_color: [.12,.12,.12,1]
+            cursor_color: [1,1,1,1]
+            foreground_color: [1,1,1,1]
